@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Meeting;
 
+use App\Mail\MeetingFormSubmitted;
 use App\Models\MeetingForm;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -32,9 +34,9 @@ class Form extends Component
     {
         return [
             'name' => ['required','string'],
-            'email' => ['required','email'],
+            'email' => ['required','email','unique:email'],
             'phone' => ['required'],
-            'telegram' => ['required', 'url'],
+            'telegram' => ['required', 'url','unique:telegram'],
             'role'=> ['required'],
         ];
     }
@@ -42,8 +44,10 @@ class Form extends Component
     public function store()
     {
         $validated = $this->validate();
-
         MeetingForm::create($validated);
+        
+        Mail::to('moearkar963@gmail.com')->send(new MeetingFormSubmitted($validated));
+
 
         $this->reset();
 
