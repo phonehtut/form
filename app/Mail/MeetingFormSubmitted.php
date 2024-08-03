@@ -38,7 +38,7 @@ class MeetingFormSubmitted extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.meeting-form-submitted',
+            view: 'email.meeting-form-submitted',
             with:[
                 'name' => $this->formData['name'],
                 'email' => $this->formData['email'],

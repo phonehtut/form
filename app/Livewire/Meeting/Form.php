@@ -34,9 +34,9 @@ class Form extends Component
     {
         return [
             'name' => ['required','string'],
-            'email' => ['required','email','unique:email'],
+            'email' => ['required','email'],
             'phone' => ['required'],
-            'telegram' => ['required', 'url','unique:telegram'],
+            'telegram' => ['required', 'url'],
             'role'=> ['required'],
         ];
     }
@@ -45,8 +45,12 @@ class Form extends Component
     {
         $validated = $this->validate();
         MeetingForm::create($validated);
-        
-        Mail::to('moearkar963@gmail.com')->send(new MeetingFormSubmitted($validated));
+
+        try {
+            Mail::to($validated['email'])->send(new MeetingFormSubmitted($validated));
+        } catch (\Exception $e) {
+            \Log::error('Mail sending failed: ' . $e->getMessage());
+        }
 
 
         $this->reset();
